@@ -23,6 +23,8 @@ class ManageLoginDialog(BackgroundDialog):
         self.ui = Ui_ManageLogin.Ui_Dialog()
         self.ui.setupUi(self)
 
+        self.setWindowTitle('管理员登录')
+
     def bindSignalSlots(self):
         self.ui.btnLogin.clicked.connect(self.vertifyAccount)
 

@@ -18,6 +18,8 @@ class ManageDialog(BackgroundDialog):
         self.ui = Ui_ManageDialog.Ui_Dialog()
         self.ui.setupUi(self)
 
+        self.setWindowTitle('管理线路')
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
