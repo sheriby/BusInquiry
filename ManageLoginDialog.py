@@ -31,8 +31,15 @@ class ManageLoginDialog(BackgroundDialog):
     def vertifyAccount(self):
         account = self.ui.leAccount.text()
         passwd = self.ui.lePasswd.text()
-        realPasswd = self.r.get('bus:admin:'+account).decode('utf-8')
-        if realPasswd is not None and passwd == realPasswd:
+        realPasswd = self.r.get('bus:admin:'+account)
+
+        if realPasswd is None:
+            QMessageBox.critical(self, '错误', '用户名或密码错误', QMessageBox.Ok)
+            self.ui.lePasswd.clear()
+            return
+
+        realPasswd = realPasswd.decode('utf-8')
+        if passwd == realPasswd:
             self.signal_LoginSuccess.emit()
         else:
             QMessageBox.critical(self, '错误', '用户名或密码错误', QMessageBox.Ok)
