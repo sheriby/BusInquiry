@@ -185,7 +185,7 @@ class MainWin(QMainWindow):
         self.ui.leEnd.clear()
 
     def onClicked_btnWrite(self):
-        self.busManager.writeIntoRedis()
+        self.busManager.writeDataIntoRedis()
         QMessageBox.information(self, '写入成功', '数据库写入成功', QMessageBox.Ok)
 
     def onClicked_btnJson(self, dialog):

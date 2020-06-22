@@ -233,6 +233,8 @@ class BusManager(object):
 
     def getAllRouteAndWeightJson(self) -> str:
         results = self.getAllRouteAndWeight()
+        if len(results) == 0:
+            return ''
         jsonStr = '{'
         for result in results:
             jsonStr += '"%s":{"route":' % result[0]
@@ -251,6 +253,13 @@ class BusManager(object):
             r.set('bus:data:%s:route' % result[0], str(
                 self.getRouteName(result[1])))
             r.set('bus:data:%s:distance' % result[0], str(result[2]))
+        delLen = len(results)
+        while True:
+            if r.get('bus:id:%d' % delLen) is None:
+                break
+            else:
+                r.delete('bus:id:%d' % delLen)
+            delLen += 1
 
     def getDataFromRedis(self):
         r = redis.StrictRedis(host='localhost', port=6379, db=0)
