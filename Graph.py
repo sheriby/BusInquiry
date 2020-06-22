@@ -72,20 +72,6 @@ class Graph(object):
     def getVertexs(self) -> list:
         return self.vertexLists.keys()
 
-    def getBus(self, bus, start) -> list:
-        visit = [start]
-        self.getNext(bus, start, visit)
-        return visit
-
-    def getNext(self, bus, start, visit: list):
-        startVertex = self.vertexLists[start]
-        for vertex in startVertex.connectTo:
-            if bus in startVertex.getBus(vertex) and vertex not in visit:
-                startVertex = self.vertexLists[vertex]
-                visit.append(vertex)
-                self.getNext(bus, vertex, visit)
-                break
-
     def getNbrWeight(self, start: int, end: int):
         if start not in self.vertexLists or end not in self.vertexLists:
             return None

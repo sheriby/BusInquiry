@@ -9,8 +9,9 @@ class BusManager(object):
         self.graph = Graph()
         self.busName2IdMap = {}
         self.busId2NameMap = {}
-        self.busStart = {}
         self.id = 1
+        self.busRoute = {}
+        self.busDistance = {}
 
         # self.loadJson('BusInquiry/buses.json')
         self.getDataFromRedis()
@@ -29,31 +30,31 @@ class BusManager(object):
                 self.busName2IdMap[name] = self.id
                 self.id += 1
             route[i] = self.busName2IdMap[route[i]]
-        # print(route)
 
     def addBusRoute(self, num: int, route: list, weight: list):
         self.genBusNameId(route)
         for i in range(len(route)-1):
             self.graph.addEdge(route[i], route[i+1], num, weight[i])
-        self.busStart[str(num)] = route[0]
+        self.busRoute[num] = route
+        self.busDistance[num] = weight
 
     def queryBusRoute(self, num) -> list:
-        if str(num) not in self.busStart:
+        if num not in self.busRoute:
             return None
-        result = self.graph.getBus(num, self.busStart[str(num)])
+        result = self.busRoute[num]
         return result
 
     def deleteBusRoute(self, num: int) -> bool:
-        if str(num) not in self.busStart:
+        if num not in self.busRoute:
             return False
-        route = self.graph.getBus(num, self.busStart[str(num)])
-        del self.busStart[str(num)]
+        route = self.busRoute[num]
         for i in range(len(route) - 1):
             res = self.graph.deleteEdge(route[i], route[i+1], num)
             if res != None and res > 0:
                 self.delOneVertexMap(route[i])
                 if res > 1:
                     self.delOneVertexMap(route[i+1])
+        del self.busRoute[num]
 
         return True
 
@@ -224,9 +225,9 @@ class BusManager(object):
 
     def getAllRouteAndWeight(self) -> [(int, list, list)]:
         results = []
-        for busNum, start in self.busStart.items():
-            route = self.graph.getBus(int(busNum), start)
-            distance = self.getWeightFromRoute(route)
+        for busNum in self.busRoute:
+            route = self.busRoute[busNum]
+            distance = self.busDistance[busNum]
             results.append((busNum, route, distance))
         return results
 
